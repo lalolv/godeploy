@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"os"
 	"os/exec"
 
 	"github.com/ccding/go-config-reader/config"
@@ -12,7 +13,6 @@ import (
 
 var (
 	shPath string
-	shFile string
 )
 
 func main() {
@@ -24,13 +24,12 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	shFile = c.Get("shell", "file")
 	shPath = c.Get("shell", "path")
 
 	// Creates a gin router with default middlewares:
 	// logger and recovery (crash-free) middlewares
 	router := gin.New()
-	router.POST("/deploy", deploy)
+	router.POST("/deploy/:shell", deploy)
 
 	// port
 	router.Run(":" + c.Get("server", "port"))
@@ -38,19 +37,34 @@ func main() {
 
 // 部署
 func deploy(c *gin.Context) {
-	system(fmt.Sprintf(`cd %s && sh %s`, shPath, shFile))
+	// Get shell param
+	shell := c.Param("shell")
+	// Check file exist
+	_, err := os.Stat(fmt.Sprintf(`%s/%s.sh`, shPath, shell))
+	if os.IsNotExist(err) {
+		c.String(http.StatusBadRequest, "File not exist")
+		return
+	}
+
+	// Call system command
+	system(fmt.Sprintf(`cd %s && sh %s.sh`, shPath, shell))
 	c.String(http.StatusOK, "OK")
 }
 
 // 调用系统指令的方法，参数s 就是调用的shell命令
 func system(s string) {
-	cmd := exec.Command("/bin/sh", "-c", s) // 调用Command函数
-	var out bytes.Buffer                    // 缓冲字节
+	// 调用Command函数
+	cmd := exec.Command("/bin/sh", "-c", s)
+	// 缓冲字节
+	var out bytes.Buffer
 
-	cmd.Stdout = &out // 标准输出
-	err := cmd.Run()  // 运行指令 ，做判断
+	// 标准输出
+	cmd.Stdout = &out
+	// 运行指令 ，做判断
+	err := cmd.Run()
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("%s", out.String()) // 输出执行结果
+	// 输出执行结果
+	fmt.Printf("%s", out.String())
 }
