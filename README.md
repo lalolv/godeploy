@@ -1,23 +1,20 @@
-# 自动部署服务
+# Automatic deployment service
 
-- [x] 支持多个项目部署
+[中文说明](./README_ZH.md)
 
-## 使用说明
+- [x] Multiple project deployment is supported
+- [x] Slack Message Sending
 
-- 执行路径：{域名}:{端口}/deploy/{执行脚本名称}。执行脚本名称中不带有.sh 扩展名。
-- 在 shells 目录下面，保存对应的脚本文件名（扩展名为 xxx.sh）。
+## How to use
 
-例如：访问 POST `http://127.0.0.1:8080/deploy/demo`，执行 `shells/demo.sh` 脚本。
+- Execution URL: `{domain name}:{port}/deploy/{Execute script name}`. The script name does not contain the `.sh` extension.
+- In the `shells` directory, save the script files (with the extension xxx.sh).
 
-## 开发计划
+For example: POST `http://127.0.0.1:8080/deploy/demo`，run `shells/demo.sh` script file。
 
-- 支持邮件发送
-- 支持插件扩展
-- 支持 Slack 接口
-- 添加 Token 身份验证
+## Plan
 
-## 后台管理
-
-- 项目管理（添加、修改等）
-- 部署记录（查询）
-- 手动(自动)部署开关
+- Support for Slack commands
+- Support for plug-in extensions
+- Add Token authentication
+- logs
