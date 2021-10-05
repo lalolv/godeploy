@@ -1,3 +1,4 @@
 deploy.sh
 build.sh
 go.sum
+log/

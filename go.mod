@@ -6,6 +6,7 @@ require (
 	github.com/ccding/go-config-reader v0.0.0-20130817225950-8b6c2b50197f
 	github.com/gin-gonic/gin v1.7.4
 	github.com/lalolv/goapis v0.0.0-20201222024708-ca2b94b5ce0a
+	github.com/rs/zerolog v1.25.0
 )
 
 require (
@@ -24,7 +25,7 @@ require (
 	github.com/nsqio/go-nsq v1.0.8 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
-	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
+	golang.org/x/sys v0.0.0-20210510120138-977fb7262007 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )

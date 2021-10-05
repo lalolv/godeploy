@@ -4,6 +4,7 @@
 
 - [x] Multiple project deployment is supported
 - [x] Slack Message Sending
+- [x] logs
 
 ## How to use
 
@@ -17,4 +18,3 @@ For example: POST `http://127.0.0.1:8080/deploy/demo`，run `shells/demo.sh` scr
 - Support for Slack commands
 - Support for plug-in extensions
 - Add Token authentication
-- logs

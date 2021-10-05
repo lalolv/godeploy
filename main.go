@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"net/http"
 	"os"
 	"os/exec"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"github.com/ccding/go-config-reader/config"
 	"github.com/gin-gonic/gin"
@@ -30,19 +34,35 @@ func main() {
 
 	shPath = c.Get("shell", "path")
 
+	// 设置日志
+	logPath, _ := pathExists("log")
+	if logPath {
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+		zerolog.TimeFieldFormat = "2006-01-02 15:04:05"
+		// 写入文件
+		logOut, err := os.OpenFile("log/api.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModePerm|os.ModeAppend)
+		if err != nil {
+			fmt.Println("err", err)
+		}
+		log.Logger = log.Output(logOut)
+	}
+
 	// slack
+	logStartup := fmt.Sprintf("[%s] Deploy service is done.", "Startup")
 	slackToken = c.Get("slack", "token")
 	slackChannel = c.Get("slack", "channel")
 	if slackToken != "" {
 		slackUtil = goapis.SlackUtil{Token: slackToken}
-		text := fmt.Sprintf("[%s] Deploy service is done.", "Startup")
-		sendSlack(text)
+		sendSlack(logStartup)
 	}
 
 	// Creates a gin router with default middlewares:
 	// logger and recovery (crash-free) middlewares
 	router := gin.New()
+	// routers
 	router.POST("/deploy/:shell", deploy)
+	// log
+	log.Log().Msg(logStartup)
 
 	// port
 	router.Run(":" + c.Get("server", "port"))
@@ -55,6 +75,7 @@ func deploy(c *gin.Context) {
 	// Check file exist
 	_, err := os.Stat(fmt.Sprintf(`%s/%s.sh`, shPath, shell))
 	if os.IsNotExist(err) {
+		log.Error().Msg("File not exist")
 		c.String(http.StatusBadRequest, "File not exist")
 		return
 	}
@@ -81,7 +102,7 @@ func sendSlack(text string) {
 	if slackUtil.Token != "" && slackChannel != "" {
 		err := slackUtil.PostMessage(slackChannel, text)
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Error().Msg(err.Error())
 		}
 	}
 }
@@ -98,10 +119,33 @@ func system(s string) error {
 	// 运行指令 ，做判断
 	err := cmd.Run()
 	if err != nil {
+		log.Error().Msg(err.Error())
 		return err
 	}
+
 	// 输出执行结果
-	fmt.Printf("%s", out.String())
+	scanner := bufio.NewScanner(&out)
+	for scanner.Scan() {
+		log.Log().Msg(scanner.Text())
+	}
 
 	return nil
+}
+
+// pathExists 判断文件夹是否存在
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		// 创建文件夹
+		err := os.MkdirAll(path, os.ModePerm)
+		if err != nil {
+			fmt.Printf("mkdir failed![%v]\n", err)
+		} else {
+			return true, nil
+		}
+	}
+	return false, err
 }
