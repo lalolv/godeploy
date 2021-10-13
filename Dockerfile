@@ -15,7 +15,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -v -o /app/g
 # 运行阶段指定scratch作为基础镜像
 FROM alpine
 LABEL maintainer="work@lalo.im" 
-LABEL version="0.1"
+LABEL version="0.2"
 
 # 添加 bash
 RUN apk add --no-cache bash

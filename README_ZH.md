@@ -3,6 +3,7 @@
 - [x] 支持多个项目部署
 - [x] Slack 消息发送
 - [x] 日志
+- [x] 支持 Slash 命令
 
 ## 使用 Docker 安装
 
@@ -37,10 +38,10 @@ lalolv/godeploy
 
 - [server] port 运行端口号
 - [shell] path: 脚本存放的路径
-- [slack] slack 接口信息，如果为空，则不会对接 API。
+- [slack] slack 接口信息，如果为空，则不会对接 API。Token 为 `OAuth & Permissions` 目录下配置项 `Bot User OAuth Token` 的值。
+- [slash] Slack API 中的 Slash Commands，可以添加对应的指令，然后在 Slack 对话框中执行。
 
 ## 开发计划
 
-- 支持 Slack 命令
 - 支持插件扩展
 - 添加 Token 身份验证

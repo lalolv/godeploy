@@ -5,6 +5,7 @@
 - [x] Multiple project deployment is supported
 - [x] Slack Message Sending
 - [x] logs
+- [x] Support for Slash commands
 
 ## Use Docker
 
@@ -38,10 +39,10 @@ File name：app.conf
 
 - [server] port: Running port number
 - [shell] path: Directory where the script is saved
-- [slack] slack: Slack config. If it is empty, the API is not connected.
+- [slack] slack: Slack config. If it is empty, the API is not connected. Token is `Bot User OAuth Token` value in `OAuth & Permissions`。
+- [slash] Slash Commands in Slack API，You can add command and run it in the Slack input field.
 
 ## Plan
 
-- Support for Slack commands
 - Support for plug-in extensions
 - Add Token authentication
